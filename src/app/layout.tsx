@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
+import { ConvexClientProvider } from "@/components/convex-client-provider";
 
 const outfit = Outfit({
   subsets: ["latin"]
@@ -23,7 +24,9 @@ export default function RootLayout({
         className={outfit.className}
       >
         <NuqsAdapter>
+          <ConvexClientProvider>
           {children}
+          </ConvexClientProvider>
         </NuqsAdapter>
       </body>
     </html>
