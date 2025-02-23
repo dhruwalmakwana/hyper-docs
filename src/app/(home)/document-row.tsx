@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Doc } from "../../../convex/_generated/dataModel";
-import { Building2Icon, CircleUserIcon, FileIcon, MoreVertical } from "lucide-react";
+import { Building2Icon, CircleUserIcon, FileIcon } from "lucide-react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { DocumentMenu } from "./document-menu";
 
 
 interface DocumentRowProps {
@@ -10,6 +10,11 @@ interface DocumentRowProps {
 };
 
 export const DocumentRow = ({ document }: DocumentRowProps) => {
+
+    const onNewTabClick = (id: string) => {
+        window.open(`/documents/${id}`, "_blank")
+    }
+
     return (
         <TableRow className="cursor-pointer ">
             <TableCell className="w-[50px] ">
@@ -29,12 +34,19 @@ export const DocumentRow = ({ document }: DocumentRowProps) => {
                 }
             </TableCell>
             <TableCell className="text-muted-foreground hidden md:table-cell">
-                {format(new Date(document?._creationTime), "MMM dd, yyyy")}
+                {document?._creationTime
+                    ? format(new Date(document._creationTime), "MMM dd, yyyy")
+                    : "Unknown Date"}
+
             </TableCell>
             <TableCell className="flex ml-auto justify-end">
-                <Button variant="ghost" size="icon" className="rounded-full">  
-                    <MoreVertical className="size-4 "/>
-                </Button>
+                {document?._id && document?.title && (
+                    <DocumentMenu
+                        documentId={document._id}
+                        title={document.title}
+                        onNewTab={onNewTabClick}
+                    />
+                )}
             </TableCell>
         </TableRow>
     );
