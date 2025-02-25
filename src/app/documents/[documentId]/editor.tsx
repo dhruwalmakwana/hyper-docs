@@ -23,8 +23,15 @@ import { FontSizeExtenstion } from "@/extensions/font-size";
 import { LineHeightExtension } from "@/extensions/line-height";
 import { Ruler } from "./ruler";
 
+import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
+import { Threads } from "./threads";
+
 export const Editor = () => {
+
+  const liveblocks = useLiveblocksExtension();
+
   const { setEditor } = useEditorStore();
+
   const editor = useEditor({
     immediatelyRender: false,
     onCreate({ editor }) {
@@ -60,7 +67,11 @@ export const Editor = () => {
       },
     },
     extensions: [
-      StarterKit,
+      liveblocks,
+      StarterKit.configure({
+        history: false,
+
+      }),
       FontSizeExtenstion,
       LineHeightExtension,
       TextAlign.configure({
@@ -97,6 +108,7 @@ export const Editor = () => {
       <Ruler />
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
+        <Threads editor={editor} />
       </div>
     </div>
   );

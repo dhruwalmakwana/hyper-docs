@@ -80,7 +80,7 @@ export const Toolbar = () => {
             {
                 label: 'Underline',
                 icon: UnderlineIcon,
-                isActive: false, // TODO: Enable this funtionality
+                isActive: editor?.isActive("underline"),
                 onClick: () => editor?.chain().focus().toggleUnderline().run(),
             },
         ],
@@ -88,8 +88,8 @@ export const Toolbar = () => {
             {
                 label: 'Comment',
                 icon: MessageSquarePlusIcon,
-                isActive: editor?.isActive("underline"),
-                onClick: () => console.log("TODO: Comment") ,
+                isActive: editor?.isActive("liveblocksCommentMarks"),
+                onClick: () => editor?.chain().focus().addPendingComment().run(),
             },
             {
                 label: 'To Do',
