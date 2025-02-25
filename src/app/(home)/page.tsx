@@ -5,14 +5,20 @@ import { Navbar } from "./navbar";
 import { TemplatesGallery } from "./templates-gallery";
 import { api } from "../../../convex/_generated/api";
 import { DocumentsTable } from "./documents-table";
+import { useState } from "react";
+import { useSearchParams } from "@/hooks/use-search-param";
 
 const Home = () => {
+  const [search, setSearch] = useSearchParams();
+  const [value, setValue] = useState(search);
 
-  const {
-    results,
-    status, 
-    loadMore
-  } = usePaginatedQuery(api.documents.get, {}, {initialNumItems: 5});
+
+
+  const { results, status, loadMore } = usePaginatedQuery(
+    api.documents.get,
+    { search },
+    { initialNumItems: 5 }
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -21,14 +27,14 @@ const Home = () => {
       </div>
       <div className="mt-16">
         <TemplatesGallery />
-        <DocumentsTable 
-          documents = {results}
-          loadMore = {loadMore}
-          status = {status}
+        <DocumentsTable
+          documents={results}
+          loadMore={loadMore}
+          status={status}
         />
       </div>
     </div>
   );
-}
+};
 
 export default Home;
