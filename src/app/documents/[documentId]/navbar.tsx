@@ -36,17 +36,18 @@ import {
 } from "lucide-react";
 import { BsFilePdf } from "react-icons/bs";
 import { useEditorStore } from "@/store/use-editor-store";
+import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 
 export const Navbar = () => {
 
   const { editor } = useEditorStore();
 
-  const insertTable = ({rows, cols} : {rows: number, cols: number}) => {
-      editor
-        ?.chain()
-        .focus()
-        .insertTable({rows, cols, withHeaderRow:false})
-        .run()
+  const insertTable = ({ rows, cols }: { rows: number, cols: number }) => {
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ rows, cols, withHeaderRow: false })
+      .run()
   };
 
 
@@ -59,11 +60,11 @@ export const Navbar = () => {
   };
 
   const onSaveJSON = () => {
-    if(!editor) return;
-  
+    if (!editor) return;
+
     const content = editor.getJSON();
     console.log(content);
-    
+
     const blob = new Blob([JSON.stringify(content)], {
       type: "application/json"
     });
@@ -73,7 +74,7 @@ export const Navbar = () => {
 
 
   const onSaveHTML = () => {
-    if(!editor) return;
+    if (!editor) return;
 
     const content = editor.getHTML();
     const blob = new Blob([content], {
@@ -84,7 +85,7 @@ export const Navbar = () => {
   };
 
   const onSaveText = () => {
-    if(!editor) return;
+    if (!editor) return;
 
     const content = editor.getText();
     const blob = new Blob([content], {
@@ -176,10 +177,10 @@ export const Navbar = () => {
                   <MenubarSub>
                     <MenubarSubTrigger>Table</MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem onClick={() => insertTable({rows: 1, cols:1})}>1 x 1</MenubarItem>
-                      <MenubarItem onClick={() => insertTable({rows: 2, cols: 2})}>2 x 2</MenubarItem>
-                      <MenubarItem onClick={() => insertTable({rows: 3, cols: 3})}>3 x 3</MenubarItem>
-                      <MenubarItem onClick={() => insertTable({rows: 4, cols: 4})}>4 x 4</MenubarItem>
+                      <MenubarItem onClick={() => insertTable({ rows: 1, cols: 1 })}>1 x 1</MenubarItem>
+                      <MenubarItem onClick={() => insertTable({ rows: 2, cols: 2 })}>2 x 2</MenubarItem>
+                      <MenubarItem onClick={() => insertTable({ rows: 3, cols: 3 })}>3 x 3</MenubarItem>
+                      <MenubarItem onClick={() => insertTable({ rows: 4, cols: 4 })}>4 x 4</MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
                 </MenubarContent>
@@ -223,6 +224,15 @@ export const Navbar = () => {
             </Menubar>
           </div>
         </div>
+      </div>
+      <div className="flex gap-3 items-center pl-6">
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl="/"
+          afterLeaveOrganizationUrl="/"
+          afterSelectOrganizationUrl="/"
+          afterSelectPersonalUrl="/"
+        />
+        <UserButton />
       </div>
     </nav>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { RemoveDialog } from "@/components/remove-document";
+import { RemoveDialog } from "@/components/remove-dialog";
 import { ExternalLinkIcon, FilePenIcon, MoreVertical, TrashIcon } from "lucide-react";
 
 import {

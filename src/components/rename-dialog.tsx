@@ -15,6 +15,7 @@ import { api } from "../../convex/_generated/api";
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 interface RenameDialogProps {
     documentId: Id<"documents">;
@@ -22,7 +23,7 @@ interface RenameDialogProps {
     children: React.ReactNode;
 };
 
-export const RenameDialog = ({ documentId, initialTitle ,children }: RenameDialogProps) => {
+export const RenameDialog = ({ documentId, initialTitle, children }: RenameDialogProps) => {
 
     const update = useMutation(api.documents.updateById);
     const [title, setTitle] = useState(initialTitle);
@@ -33,10 +34,12 @@ export const RenameDialog = ({ documentId, initialTitle ,children }: RenameDialo
         e.preventDefault();
         setisUpdating(true);
 
-        update({ id:documentId, title: title.trim() || "Untitled" })
-            .then(() => {setOpen(false);})
+        update({ id: documentId, title: title.trim() || "Untitled" })
+            .catch(() => toast.error("Something went wrong!"))
+            .then(() => toast.success("Document updated!"))
             .finally(() => {
                 setisUpdating(false);
+                setOpen(false);
             })
     }
 
@@ -58,7 +61,7 @@ export const RenameDialog = ({ documentId, initialTitle ,children }: RenameDialo
                         </DialogDescription>
                     </DialogHeader>
                     <div className="my-4">
-                        <Input 
+                        <Input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Document name"
@@ -66,7 +69,7 @@ export const RenameDialog = ({ documentId, initialTitle ,children }: RenameDialo
                         />
                     </div>
                     <DialogFooter>
-                        <Button 
+                        <Button
                             type="button"
                             variant="ghost"
                             disabled={isUpdating}
@@ -80,7 +83,7 @@ export const RenameDialog = ({ documentId, initialTitle ,children }: RenameDialo
                         <Button
                             type="submit"
                             disabled={isUpdating}
-                            onClick={(e) => {e.stopPropagation();}}>
+                            onClick={(e) => { e.stopPropagation(); }}>
                             Save
                         </Button>
 
