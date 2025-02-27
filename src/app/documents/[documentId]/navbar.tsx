@@ -20,7 +20,6 @@ import {
   BoldIcon,
   FileIcon,
   FileJsonIcon,
-  FilePenIcon,
   FilePlusIcon,
   FileTextIcon,
   GlobeIcon,
@@ -30,7 +29,6 @@ import {
   RemoveFormattingIcon,
   StrikethroughIcon,
   TextIcon,
-  TrashIcon,
   UnderlineIcon,
   UndoIcon,
 } from "lucide-react";
@@ -44,8 +42,6 @@ import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
-import { RenameDialog } from "@/components/rename-dialog";
-import { RemoveDialog } from "@/components/remove-dialog";
 
 
 interface NavbarProps {
