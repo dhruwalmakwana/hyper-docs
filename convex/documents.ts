@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 
@@ -167,6 +167,12 @@ export const updateById = mutation({
 export const getById = query({
   args: { id: v.id("documents") },
   handler: async (ctx, { id }) => {
-    return await ctx.db.get(id);
+    const document = await ctx.db.get(id);
+    
+    if(!document) {
+      throw new ConvexError("Document not found!");
+    }
+
+    return document;
   },
 });
