@@ -68,7 +68,7 @@ export function Room({ children }: { children: ReactNode }) {
 
                 return filteredUsers.map((user) => user.id);
             }}
-            resolveRoomsInfo={ async ({ roomIds }) => {
+            resolveRoomsInfo={async ({ roomIds }) => {
                 const document = await getDocuments(roomIds as Id<"documents">[]);
 
                 return document.map((document) => ({
@@ -77,7 +77,10 @@ export function Room({ children }: { children: ReactNode }) {
                 }));
             }}
         >
-            <RoomProvider id={params.documentId as string}>
+            <RoomProvider
+                id={params.documentId as string}
+                initialStorage={{ leftMargin: 56, rightMargin: 56 }}
+            >
                 <ClientSideSuspense fallback={<FullScreenLoader label="Room Loading..." />}>
                     {children}
                 </ClientSideSuspense>

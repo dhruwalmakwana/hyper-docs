@@ -1,12 +1,19 @@
-import { ScanEye } from "lucide-react";
+import { useStorage, useMutation } from "@liveblocks/react/suspense";
 import { useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa"
 
 const markers = Array.from({ length: 83 }, (_, i) => i);
 
 export const Ruler = () => {
-  const [leftMargin, setLeftMargin] = useState(56);
-  const [rightMargin, setRightMargin] = useState(56);
+  const leftMargin = useStorage((root) => root.leftMargin) ?? 56;
+  const setLeftMargin = useMutation(({ storage }, position: number) => {
+    storage.set("leftMargin", position);
+  }, []);
+  
+  const rightMargin = useStorage((root) => root.rightMargin) ?? 56;
+  const setRightMargin = useMutation(({ storage }, position: number) => {
+    storage.set("rightMargin", position);
+  }, []); 
 
   const [isDraggingLeft, setIsDraggingLeft] = useState(false);
   const [isDraggingRight, setIsDraggingRight] = useState(false);
@@ -20,33 +27,33 @@ export const Ruler = () => {
     setIsDraggingRight(true);
   }
 
-  const handleMouseMove= (e:React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
     const PAGE_WIDTH = 816;
     const MINIMUM_SPACE_BETWEEN_MARGINS = 100;
 
-    if((isDraggingLeft || isDraggingRight && rulerRef.current)) {
+    if ((isDraggingLeft || isDraggingRight && rulerRef.current)) {
       const container = rulerRef.current?.querySelector('#ruler-container');
-      if(container) {
+      if (container) {
         const containerRect = container.getBoundingClientRect();
         const relativeX = e.clientX - containerRect.left;
         const rawPosition = Math.max(0, Math.min(PAGE_WIDTH, relativeX));
 
-        if(isDraggingLeft) {
+        if (isDraggingLeft) {
           const maxLeftPosition = PAGE_WIDTH - rightMargin - MINIMUM_SPACE_BETWEEN_MARGINS;
           const newLeftPosition = Math.min(rawPosition, maxLeftPosition);
-          setLeftMargin(newLeftPosition); //TODO: Make collaborative
-        } else if(isDraggingRight) {
+          setLeftMargin(newLeftPosition);
+        } else if (isDraggingRight) {
           const maxRightPosition = PAGE_WIDTH - (leftMargin + MINIMUM_SPACE_BETWEEN_MARGINS);
-          const newRightPosition = Math.max(PAGE_WIDTH -rawPosition, 0);
+          const newRightPosition = Math.max(PAGE_WIDTH - rawPosition, 0);
           const contrainedRightPosition = Math.min(newRightPosition, maxRightPosition);
           setRightMargin(contrainedRightPosition);
         }
       }
     }
-  } 
+  }
 
 
-  const handleMouseUp =  () => {
+  const handleMouseUp = () => {
     setIsDraggingLeft(false);
     setIsDraggingRight(false);
   };
@@ -60,13 +67,13 @@ export const Ruler = () => {
   }
 
   return (
-    <div 
+    <div
       ref={rulerRef}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-    
-    className="w-[816px] mx-auto h-6 border-b border-gray-300 flex items-end relative select-none print:hidden">
+
+      className="w-[816px] mx-auto h-6 border-b border-gray-300 flex items-end relative select-none print:hidden">
       <div
         id="ruler-container"
 
@@ -156,7 +163,7 @@ const Marker = ({
           transform: "scaleX(0.5)",
           backgroundColor: "#3B72F6",
           display: isDragging ? "block" : "none"
-        }} 
+        }}
       />
     </div>
   );
