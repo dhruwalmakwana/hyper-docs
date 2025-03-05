@@ -3,34 +3,34 @@
 import { usePaginatedQuery } from "convex/react";
 import { useSearchParams } from "@/hooks/use-search-param";
 import { Navbar } from "./navbar";
-import { TemplatesGallery } from "./templates-gallery";
+import { TemplatesGallery } from "./templates-gallery"; // New Floating Panel
 import { DocumentsTable } from "./documents-table";
 import { api } from "../../../convex/_generated/api";
 
 const Home = () => {
-  const [search] = useSearchParams();
+    const [search] = useSearchParams();
 
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.documents.get,
-    { search },
-    { initialNumItems: 5 }
-  );
+    const { results, status, loadMore } = usePaginatedQuery(
+        api.documents.get,
+        { search },
+        { initialNumItems: 5 }
+    );
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      <div className="fixed top-0 left-0 right-0 z-10 h-16 bg-white p-4">
-        <Navbar />
-      </div>
-      <div className="mt-16">
-        <TemplatesGallery />
-        <DocumentsTable
-          documents={results}
-          loadMore={loadMore}
-          status={status}
-        />
-      </div>
-    </div>
-  );
+    return (
+        <div className="min-h-screen flex flex-col">
+                <Navbar />
+            <TemplatesGallery />
+
+            {/* Main Content */}
+            <main className="flex-1 p-6 bg-gray-100 overflow-y-auto h-[calc(100vh-4rem)] pt-[15rem]">
+                <DocumentsTable
+                    documents={results}
+                    loadMore={loadMore}
+                    status={status}
+                />
+            </main>
+        </div>
+    );
 };
 
 export default Home;
