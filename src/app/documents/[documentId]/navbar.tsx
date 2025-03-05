@@ -121,7 +121,7 @@ export const Navbar = ({ data }: NavbarProps) => {
   };
 
   return (
-    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[98%] max-w-[1000vh] flex items-center justify-between bg-white/80 backdrop-blur-md shadow-xl z-50 rounded-full px-6 py-3">
+    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[1200px] flex items-center justify-between bg-white/80 backdrop-blur-md shadow-xl z-50 rounded-full px-6 py-3">
       <div className="flex gap-2 items-center">
         <Link href={"/"}>
           <Image src="/logo.svg" alt="Logo" width={36} height={36} />
