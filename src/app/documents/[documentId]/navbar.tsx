@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { DocumentInput } from "./document-input";
+import { AITools } from "./ai-tools";
 
 import {
   Menubar,
@@ -42,7 +43,6 @@ import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
-
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -163,22 +163,6 @@ export const Navbar = ({ data }: NavbarProps) => {
                     <FilePlusIcon className="size-4 m-2" />
                     New Document
                   </MenubarItem>
-                  <MenubarSeparator />
-                  {/* <RenameDialog documentId={data._id} initialTitle={data.title}>
-                    <MenubarItem>
-                      <FilePenIcon className="size-4 m-2" />
-                      Rename
-                    </MenubarItem>
-                  </RenameDialog>
-                  <RemoveDialog documentId={data._id}>
-                    <MenubarItem
-                      onClick={(e) => e.stopPropagation()}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      <TrashIcon className="size-4 m-2" />
-                      Remove
-                    </MenubarItem>
-                  </RemoveDialog> */}
                   <MenubarSeparator />
                   <MenubarItem onClick={() => window.print()}>
                     <PrinterIcon className="size-4 m-2" />
