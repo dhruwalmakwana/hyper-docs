@@ -26,17 +26,25 @@ export const SummaryPanel = ({ isOpen, onClose }: SummaryPanelProps) => {
       return;
     }
     
+    const content = editor.getText().trim();
+    if (!content) {
+      toast.error('Please add some content to your document before generating a summary.');
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      const content = editor.getText();
-      
-      const prompt = `You are a document formatter. Format the following text as a clean HTML summary without any markdown code blocks or backticks. Use proper HTML structure with:
-- <h2> for the summary title
-- <p> for summary paragraphs
-- <strong> for key points
-- <ul> and <li> for bullet points
-- <br> for line breaks
-Return only the HTML content without any additional text or markdown formatting. Maintain all line breaks and paragraph spacing:\n\n${content}`;
+      const prompt = `Create a comprehensive summary of the following text. Format as clean HTML with:
+- <h1> for main title
+- <h2> for section headings
+- <h3> for subsections
+- <p> for paragraphs
+- <strong> for important text
+- <em> for emphasis
+- <ul> and <li> for lists
+- <blockquote> for quotes
+
+Return only the HTML content:\n\n${content}`;
       
       const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
@@ -68,17 +76,10 @@ Return only the HTML content without any additional text or markdown formatting.
 
       const generatedText = result.candidates[0].content.parts[0].text;
       
-      // Remove markdown code blocks if present
+      // Clean up any markdown or formatting
       const cleanText = generatedText.replace(/```html\n?|\n?```/g, '').trim();
       
-      // Format the content for TipTap editor with HTML
-      const formattedSummary = cleanText
-        .split('\n')
-        .map((line: string) => line.trim())
-        .filter((line: string) => line.length > 0 && line !== '<p></p>')
-        .join('\n');
-      
-      setSummary(formattedSummary);
+      setSummary(cleanText);
       
       toast.success('Summary generated successfully');
     } catch (error) {
