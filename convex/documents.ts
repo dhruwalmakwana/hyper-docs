@@ -62,27 +62,19 @@ export const get = query({
       | string
       | undefined;
 
-    // Search within organization
-    if (search && organizationId) {
-      return await ctx.db
-        .query("documents")
-        .withSearchIndex("search_title", (q) =>
-          q.search("title", search).eq("organizationId", organizationId)
-        )
-        .paginate(paginationOpts);
-    }
-
-    // Personal search
     if (search) {
       return await ctx.db
         .query("documents")
         .withSearchIndex("search_title", (q) => {
-          return q.search("title", search).eq("ownerId", user.subject);
+          const query = q.search("title", search);
+          if (organizationId) {
+            return query.eq("organizationId", organizationId);
+          }
+          return query.eq("organizationId", undefined);
         })
         .paginate(paginationOpts);
     }
 
-    // All docs inside organization
     if (organizationId) {
       return await ctx.db
         .query("documents")
@@ -92,10 +84,10 @@ export const get = query({
         .paginate(paginationOpts);
     }
 
-    // All personal docs
     return await ctx.db
       .query("documents")
       .withIndex("by_owner_id", (q) => q.eq("ownerId", user.subject))
+      .filter((q) => q.eq(q.field("organizationId"), undefined))
       .paginate(paginationOpts);
   },
 });
@@ -167,10 +159,30 @@ export const updateById = mutation({
 export const getById = query({
   args: { id: v.id("documents") },
   handler: async (ctx, { id }) => {
+    const user = await ctx.auth.getUserIdentity();
+
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const organizationId = (user.organization_id ?? undefined) as
+      | string
+      | undefined;
+
     const document = await ctx.db.get(id);
     
     if(!document) {
       throw new ConvexError("Document not found!");
+    }
+
+    // Check if trying to access organization document while not in organization context
+    if (document.organizationId && !organizationId) {
+      throw new ConvexError("Cannot access organization document in personal context!");
+    }
+
+    // Check if trying to access personal document while in organization context
+    if (!document.organizationId && organizationId) {
+      throw new ConvexError("Cannot access personal document in organization context!");
     }
 
     return document;
