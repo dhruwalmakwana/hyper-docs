@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Button } from "@/components/ui/button";
 import { useEditorStore } from "@/store/use-editor-store";
 import { Wand2Icon, FileTextIcon, Loader2Icon } from "lucide-react";

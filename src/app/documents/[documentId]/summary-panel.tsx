@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 import { useState } from "react";

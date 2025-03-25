@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { DocumentInput } from "./document-input";
-import { AITools } from "./ai-tools";
 
 import {
   Menubar,
