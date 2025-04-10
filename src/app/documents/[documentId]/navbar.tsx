@@ -42,6 +42,9 @@ import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface NavbarProps {
   data: Doc<"documents">;
@@ -118,6 +121,10 @@ export const Navbar = ({ data }: NavbarProps) => {
 
     onDownload(blob, `${data.title}.txt`); //TODO: Use docuement name
   };
+
+  const [customRows, setCustomRows] = useState(2);
+  const [customCols, setCustomCols] = useState(2);
+
 
   return (
     <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[1200px] flex items-center justify-between bg-white/80 backdrop-blur-md shadow-xl z-50 rounded-full px-6 py-3">
@@ -196,6 +203,42 @@ export const Navbar = ({ data }: NavbarProps) => {
                       <MenubarItem onClick={() => insertTable({ rows: 2, cols: 2 })}>2 x 2</MenubarItem>
                       <MenubarItem onClick={() => insertTable({ rows: 3, cols: 3 })}>3 x 3</MenubarItem>
                       <MenubarItem onClick={() => insertTable({ rows: 4, cols: 4 })}>4 x 4</MenubarItem>
+
+                      <div className="border-t pt-2">
+                        <div className="text-xs text-muted-foreground mb-1">Custom Size</div>
+                        <div className="flex gap-2 mb-2">
+                          <Input
+                            type="number"
+                            value={customRows}
+                            onChange={(e) => setCustomRows(Number(e.target.value))}
+                            min={1}
+                            max={20}
+                            placeholder="Rows"
+                            className="w-16"
+                          />
+                          <Input
+                            type="number"
+                            value={customCols}
+                            onChange={(e) => setCustomCols(Number(e.target.value))}
+                            min={1}
+                            max={20}
+                            placeholder="Cols"
+                            className="w-16"
+                          />
+                        </div>
+                        <Button
+                          className="w-full"
+                          onClick={() => {
+                            if (customRows < 1 || customCols < 1) {
+                              toast.error("Rows and columns must be at least 1");
+                              return;
+                            }
+                            insertTable({ rows: customRows, cols: customCols });
+                          }}
+                        >
+                          Insert {customRows} x {customCols}
+                        </Button>
+                      </div>
                     </MenubarSubContent>
                   </MenubarSub>
                 </MenubarContent>

@@ -59,7 +59,7 @@ const InboxMenu = () => {
                             ))}
                         </InboxNotificationList>
                     ) : (
-                        <div className="p-2 w-[400px] text-center text-sm text-muted-foreground">
+                        <div className="p-2 w-[400px] text-center text-sm text-muted-foreground bg-white rounded-full shadow-inner">
                             No Notifications
                         </div>
                     )}
