@@ -1,9 +1,11 @@
+import { useEffect } from "react";
+
 const DocumentPage = () => {
-    return ( 
-        <div>
-            Document Page
-        </div>
-     );
+    useEffect(() => {
+        window.location.href = "/"; // Redirect to the home page
+    }, []);
+    
+    return null;
 }
  
 export default DocumentPage;

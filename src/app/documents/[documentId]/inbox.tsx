@@ -48,18 +48,22 @@ const InboxMenu = () => {
                         )}
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-auto">
+                <DropdownMenuContent
+                    align="end"
+                    className="w-auto max-w-[300px] md:max-w-screen-md overflow-y-auto"
+                >
                     {inboxNotifications.length > 0 ? (
-                        <InboxNotificationList>
+                        <InboxNotificationList className="break-words whitespace-normal">
                             {inboxNotifications.map((inboxNotification) => (
                                 <InboxNotification
                                     key={inboxNotification.id}
                                     inboxNotification={inboxNotification}
+                                    className="p-2 break-words whitespace-normal"
                                 />
                             ))}
                         </InboxNotificationList>
                     ) : (
-                        <div className="p-2 w-[400px] text-center text-sm text-muted-foreground bg-white rounded-full shadow-inner">
+                        <div className="p-2 text-center text-sm text-muted-foreground bg-white rounded-full shadow-inner">
                             No Notifications
                         </div>
                     )}

@@ -64,7 +64,7 @@ export const DocumentInput = ({ title, id }: DocumentInputProps) => {
             {isEditing ? (
                 <form
                     onSubmit={handleSubmit}
-                    className='relative w-fit max-w-[50ch]'
+                    className='relative w-fit max-w-[10ch] md:max-w-[30ch]'
                 >
                     <span className='invisible whitespace-pre px-1.5 text-lg'>
                         {value || " "}
@@ -85,7 +85,7 @@ export const DocumentInput = ({ title, id }: DocumentInputProps) => {
                             inputRef.current?.focus();
                         }, 0);
                     }}
-                    className="text-lg px-1.5 cursor-pointer truncate">
+                    className="text-lg px-1.5 cursor-pointer truncate max-w-[10ch] md:max-w-[50ch]">
                     {title}
                 </span>
             )}
