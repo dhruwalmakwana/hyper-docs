@@ -6,6 +6,7 @@ import "@liveblocks/react-tiptap/styles.css";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
+import { Analytics } from "@vercel/analytics/react"
 
 const outfit = Outfit({
   subsets: ["latin"]
@@ -32,6 +33,7 @@ export default function RootLayout({
           {children}
           </ConvexClientProvider>
         </NuqsAdapter>
+        <Analytics />
       </body>
     </html>
   );
