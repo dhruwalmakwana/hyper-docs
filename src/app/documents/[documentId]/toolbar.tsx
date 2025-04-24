@@ -68,7 +68,7 @@ export const Toolbar = () => {
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#F1F4F9] px-4 py-2 rounded-full shadow-lg min-h-[40px] flex items-center gap-x-1 overflow-x-auto whitespace-nowrap max-w-full">
 
             {sections[0].map((item) => (
-                <ToolbarButton key={item.label} {...item} />
+                <ToolbarButton key={item.label} {...item} /> 
             ))}
             <Separator orientation="vertical" className="h-6 bg-neutral-300" />
 

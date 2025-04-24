@@ -7,6 +7,9 @@ import { Room } from "./room";
 import { Toolbar } from "./toolbar";
 import { api } from "../../../../convex/_generated/api";
 import { AITools } from "./ai-tools";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface DocumentProps {
     preLoadedDocument: Preloaded<typeof api.documents.getById>;
@@ -15,6 +18,26 @@ interface DocumentProps {
 export const Document = ({ preLoadedDocument }: DocumentProps) => {
     
     const document = usePreloadedQuery(preLoadedDocument);
+    const router = useRouter();
+
+    console.log("Document", document);
+
+    useEffect(() => {
+        if (document === null) {
+            toast.error("This document has been deleted");
+            router.push('/');
+        }
+    }, [document, router]);
+
+    if (!document) {
+        return (    
+            <div className="flex items-center justify-center h-full">
+                <div className="text-muted-foreground">
+                    This document has been deleted or is no longer accessible
+                </div>
+            </div>
+        );
+    }
 
     return (
         <Room>
