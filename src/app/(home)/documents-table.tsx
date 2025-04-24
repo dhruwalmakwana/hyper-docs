@@ -20,6 +20,11 @@ interface DocumentsTableProps {
 };
 
 export const DocumentsTable = ({ documents, loadMore, status }: DocumentsTableProps) => {
+
+    documents?.sort((a, b) => {
+        return new Date(b._creationTime).getTime() - new Date(a._creationTime).getTime()
+    });
+    
     return (
         <div
             className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
@@ -63,7 +68,7 @@ export const DocumentsTable = ({ documents, loadMore, status }: DocumentsTablePr
                     size="sm"
                     onClick={() => loadMore(5)}
                     disabled={status !== "CanLoadMore"}>
-                        {status === "CanLoadMore" ? "Load More" : "End of results"}
+                    {status === "CanLoadMore" ? "Load More" : "End of results"}
                 </Button>
             </div>
         </div>

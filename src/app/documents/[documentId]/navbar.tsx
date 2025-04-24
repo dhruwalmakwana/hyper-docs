@@ -85,7 +85,6 @@ export const Navbar = ({ data }: NavbarProps) => {
     if (!editor) return;
 
     const content = editor.getJSON();
-    console.log(content);
 
     const blob = new Blob([JSON.stringify(content)], {
       type: "application/json",

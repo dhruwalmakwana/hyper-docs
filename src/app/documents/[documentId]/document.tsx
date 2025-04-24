@@ -20,7 +20,6 @@ export const Document = ({ preLoadedDocument }: DocumentProps) => {
     const document = usePreloadedQuery(preLoadedDocument);
     const router = useRouter();
 
-    console.log("Document", document);
 
     useEffect(() => {
         if (document === null) {
