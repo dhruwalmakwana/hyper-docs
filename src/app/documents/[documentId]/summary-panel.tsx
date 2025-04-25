@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
+import { Loader2Icon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useEditorStore } from "@/store/use-editor-store";
 import { toast } from "sonner";
@@ -25,16 +25,16 @@ export const SummaryPanel = ({ isOpen, onClose }: SummaryPanelProps) => {
       toast.error('API key is missing. Please check your environment variables.');
       return;
     }
-    
+
     const content = editor.getText().trim();
     if (!content) {
       toast.error('Please add some content to your document before generating a summary.');
       return;
     }
-    
+
     setIsLoading(true);
     try {
-      const prompt = `Create a comprehensive summary of the following text. Format as clean HTML with:
+      const prompt = `Create a  summary of the following text. Format as clean HTML with:
 - <h1> for main title
 - <h2> for section headings
 - <h3> for subsections
@@ -45,7 +45,7 @@ export const SummaryPanel = ({ isOpen, onClose }: SummaryPanelProps) => {
 - <blockquote> for quotes
 
 Return only the HTML content:\n\n${content}`;
-      
+
       const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
@@ -62,7 +62,7 @@ Return only the HTML content:\n\n${content}`;
         const errorText = await response.text();
         throw new Error(`API request failed: ${response.status} ${response.statusText}\n${errorText}`);
       }
-      
+
       let result;
       try {
         result = await response.json();
@@ -75,12 +75,12 @@ Return only the HTML content:\n\n${content}`;
       }
 
       const generatedText = result.candidates[0].content.parts[0].text;
-      
+
       // Clean up any markdown or formatting
       const cleanText = generatedText.replace(/```html\n?|\n?```/g, '').trim();
-      
+
       setSummary(cleanText);
-      
+
       toast.success('Summary generated successfully');
     } catch (error) {
       console.error('Summary generation failed:', error);
@@ -95,16 +95,29 @@ Return only the HTML content:\n\n${content}`;
   };
 
   return (
-    <div 
-      className={`fixed right-0 top-0 h-full w-96 bg-white shadow-lg border-l transition-transform duration-200 z-50 ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
+    <div
+      className={`fixed right-0 top-0 h-full w-96 bg-white shadow-lg border-l transition-transform duration-200 z-50 ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
     >
       <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Document Summary</h2>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <XIcon className="h-4 w-4" />
-        </Button>
+        <h2 className="text-lg font-semibold">Summary</h2>
+        <div>
+          <Button onClick={generateSummary} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Regenerating...
+              </>
+            ) : (
+              <>
+                Regenerate
+              </>
+            )}
+          </Button>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <XIcon className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <div className="p-4 h-[calc(100vh-4rem)] overflow-y-auto">
         {!summary ? (
@@ -115,7 +128,7 @@ Return only the HTML content:\n\n${content}`;
             </Button>
           </div>
         ) : (
-          <div 
+          <div
             className="prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{ __html: summary }}
           />

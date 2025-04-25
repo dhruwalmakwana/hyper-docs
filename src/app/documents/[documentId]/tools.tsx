@@ -481,6 +481,7 @@ export const FontFamilyButton = () => {
     const { editor } = useEditorStore();
 
     const fonts = [
+        { label: "Outfit" , value: "Outfit"},
         { label: "Arial" , value: "Arial"},
         { label: "Times New Roman" , value: "Times New Roman"},
         { label: "Courier New" , value: "Courier New"},

@@ -53,25 +53,6 @@ export const Editor = ({ initialContent }: EditorProps) => {
     onDestroy() {
       setEditor(null);
     },
-    onUpdate({ editor }) {
-      setEditor(editor);
-    },
-    onSelectionUpdate({ editor }) {
-      setEditor(editor);
-    },
-    onTransaction({ editor }) {
-      setEditor(editor);
-    },
-    onFocus({ editor }) {
-      setEditor(editor);
-    },
-    onBlur({ editor }) {
-      setEditor(editor);
-    },
-    onContentError({ editor }) {
-      setEditor(editor);
-    },
-
     editorProps: {
       attributes: {
         style: `padding-left: ${leftMargin ?? LEFT_MARGIN_DEFAULT}px; padding-right: ${rightMargin ?? RIGHT_MARGIN_DEFAULT}px;`,
