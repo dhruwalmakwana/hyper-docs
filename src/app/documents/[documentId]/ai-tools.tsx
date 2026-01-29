@@ -40,7 +40,66 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+
+async function callGemini(prompt: string) {
+  const url = `${API_URL}?key=${GEMINI_API_KEY}`;
+  const body = JSON.stringify({
+    contents: [{ parts: [{ text: prompt }] }]
+  });
+
+  const maxRetries = 3;
+  let attempt = 0;
+
+  while (true) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+
+    if (res.ok) {
+      try {
+        return await res.json();
+      } catch (err) {
+        throw new Error('Failed to parse API response as JSON');
+      }
+    }
+
+    const status = res.status;
+    const text = await res.text();
+
+    // If rate limited, try to extract retry delay from response and retry with backoff
+    if (status === 429 && attempt < maxRetries) {
+      let waitMs = 2000 * Math.pow(2, attempt); // exponential backoff default
+      try {
+        const errObj = JSON.parse(text);
+        const retryInfo = Array.isArray(errObj?.details)
+          ? errObj.details.find((d: any) => typeof d === 'object' && d['@type']?.includes('RetryInfo'))
+          : null;
+        const retryDelay = retryInfo?.retryDelay || errObj?.error?.retryDelay || errObj?.retryDelay;
+        if (typeof retryDelay === 'string') {
+          const m = retryDelay.match(/(\d+)(s|m)?/);
+          if (m) {
+            const val = parseInt(m[1], 10);
+            waitMs = m[2] === 'm' ? val * 60000 : val * 1000;
+          }
+        }
+      } catch (e) {
+        // ignore parsing errors and use default backoff
+      }
+
+      await new Promise((r) => setTimeout(r, waitMs));
+      attempt += 1;
+      continue;
+    }
+
+    // For other non-OK responses or exhausted retries, throw a helpful error
+    let message = `API request failed: ${res.status} ${res.statusText}`;
+    if (text) message += '\n' + text;
+    throw new Error(message);
+  }
+}
 
 export const AITools = () => {
   const { editor } = useEditorStore();
@@ -153,31 +212,9 @@ Return only the HTML content:\n\n${content}`
           break;
       }
 
-      const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        }),
-      });
+      const result = await callGemini(prompt);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API request failed: ${response.status} ${response.statusText}\n${errorText}`);
-      }
-      
-      let result;
-      try {
-        result = await response.json();
-      } catch (parseError) {
-        throw new Error('Failed to parse API response as JSON');
-      }
-
-      if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
+      if (!result?.candidates?.[0]?.content?.parts?.[0]?.text) {
         throw new Error('Unexpected API response format');
       }
 
@@ -236,31 +273,9 @@ Format as clean HTML with:
 
 Return only the HTML content:`;
 
-      const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        }),
-      });
+      const result = await callGemini(prompt);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API request failed: ${response.status} ${response.statusText}\n${errorText}`);
-      }
-      
-      let result;
-      try {
-        result = await response.json();
-      } catch (parseError) {
-        throw new Error('Failed to parse API response as JSON');
-      }
-
-      if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
+      if (!result?.candidates?.[0]?.content?.parts?.[0]?.text) {
         throw new Error('Unexpected API response format');
       }
 
