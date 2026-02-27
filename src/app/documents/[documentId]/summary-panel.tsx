@@ -7,7 +7,7 @@ import { useEditorStore } from "@/store/use-editor-store";
 import { toast } from "sonner";
 
 const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 interface SummaryPanelProps {
   isOpen: boolean;
